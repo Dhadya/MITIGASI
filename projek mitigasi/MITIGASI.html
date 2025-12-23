@@ -1,0 +1,1041 @@
+
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathGuard - Matematika Siaga Bencana</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f9fafb;
+            color: #000;
+        }
+        
+        .modal-hidden {
+            display: none !important;
+        }
+        
+        .modal-visible {
+            display: flex !important;
+        }
+
+        /* Fallback styles */
+        button {
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+
+        svg {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .space-y-6 > * + * {
+            margin-top: 1.5rem;
+        }
+
+        .space-y-8 > * + * {
+            margin-top: 2rem;
+        }
+
+        .space-y-4 > * + * {
+            margin-top: 1rem;
+        }
+
+        .gap-3 {
+            gap: 0.75rem;
+        }
+
+        .gap-4 {
+            gap: 1rem;
+        }
+
+        .gap-6 {
+            gap: 1.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div id="app">
+        <!-- Header -->
+        <header class="bg-white border-b-2 border-gray-200 sticky top-0 z-40 shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-orange-500 p-2 rounded-lg">
+                            <svg class="text-white" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                            </svg>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold text-gray-800">MathGuard</h1>
+                            <p class="text-xs text-gray-500">Matematika Siaga Bencana</p>
+                        </div>
+                    </div>
+                    
+                    <button id="menuBtn" class="md:hidden p-2 hover:bg-gray-100 rounded-lg">
+                        <svg id="menuIcon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+
+                    <nav id="desktopNav" class="hidden md:flex gap-2">
+                        <!-- Nav items will be inserted here by JS -->
+                    </nav>
+                </div>
+
+                <!-- Mobile Menu -->
+                <nav id="mobileNav" class="md:hidden mt-4 space-y-2 pb-4 hidden">
+                    <!-- Nav items will be inserted here by JS -->
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 py-8">
+            <div id="content">
+                <!-- Content will be inserted here by JS -->
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white mt-16">
+            <div class="max-w-7xl mx-auto px-4 py-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div>
+                        <h3 class="font-bold mb-3">MathGuard</h3>
+                        <p class="text-gray-400 text-sm">
+                            Platform pembelajaran matematika kontekstual berbasis mitigasi bencana untuk siswa SMP
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="font-bold mb-3">Fitur</h3>
+                        <ul class="space-y-2 text-gray-400 text-sm">
+                            <li>Modul Interaktif</li>
+                            <li>Simulasi Bencana</li>
+                            <li>Tracking Progress</li>
+                            <li>Badge & Reward</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-bold mb-3">Kontak</h3>
+                        <p class="text-gray-400 text-sm">
+                            Program Pengabdian Masyarakat<br />
+                            DPPM - Mitigasi Bencana<br />
+                            Email: mathguard@edu.id
+                        </p>
+                    </div>
+                </div>
+                <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400 text-sm">
+                    © 2024 MathGuard. Dikembangkan untuk Pengabdian Masyarakat
+                </div>
+            </div>
+        </footer>
+
+        <!-- Modal -->
+        <div id="moduleModal" class="modal-hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div class="bg-white rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto" id="modalContent">
+                <!-- Modal content will be inserted here by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const app = {
+            state: {
+                activeTab: 'beranda',
+                menuOpen: false,
+                selectedModule: null,
+                modules: [
+                    {
+                        id: 1,
+                        title: "Geometri untuk Evakuasi",
+                        icon: "map",
+                        color: "bg-blue-500",
+                        description: "Pelajari cara menghitung luas zona aman, jarak evakuasi, dan perimeter wilayah bencana",
+                        topics: ["Luas & Keliling", "Jarak Titik", "Skala Peta"],
+                        difficulty: "Pemula",
+                        duration: "45 menit",
+                        caseStudy: "Menghitung radius zona aman evakuasi saat gempa 5.8 SR terjadi di Malang"
+                    },
+                    {
+                        id: 2,
+                        title: "Statistika Kebencanaan",
+                        icon: "calculator",
+                        color: "bg-green-500",
+                        description: "Analisis data gempa, interpretasi grafik, dan probabilitas kejadian bencana",
+                        topics: ["Rata-rata", "Diagram", "Peluang"],
+                        difficulty: "Menengah",
+                        duration: "50 menit",
+                        caseStudy: "Menganalisis data 50 gempa terakhir untuk memprediksi pola kejadian"
+                    },
+                    {
+                        id: 3,
+                        title: "Aljabar Logistik Bencana",
+                        icon: "book",
+                        color: "bg-purple-500",
+                        description: "Hitung kebutuhan logistik, kapasitas shelter, dan distribusi bantuan",
+                        topics: ["Persamaan Linear", "Sistem Persamaan", "Optimasi"],
+                        difficulty: "Lanjutan",
+                        duration: "60 menit",
+                        caseStudy: "Menentukan jumlah optimal tenda pengungsian untuk 2000 warga"
+                    }
+                ],
+                simulationScenarios: [
+                    {
+                        title: "Simulasi Gempa Malang",
+                        description: "Gempa 5.2 SR terjadi. Berapa luas radius aman?",
+                        type: "Geometri"
+                    },
+                    {
+                        title: "Evakuasi Gunung Semeru",
+                        description: "3000 warga butuh dievakuasi. Berapa shelter diperlukan?",
+                        type: "Aljabar"
+                    },
+                    {
+                        title: "Analisis Banjir Tahunan",
+                        description: "Data 10 tahun terakhir. Kapan banjir terparah?",
+                        type: "Statistika"
+                    }
+                ]
+            },
+
+            getSvgIcon(iconName) {
+                const icons = {
+                    menu: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>',
+                    close: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>',
+                    chevronRight: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>',
+                    play: '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>',
+                    book: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>',
+                    map: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><polyline points="8 2 8 18"></polyline><polyline points="16 6 16 22"></polyline></svg>',
+                    calculator: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><rect x="8" y="6" width="8" height="8"></rect><line x1="8" y1="18" x2="16" y2="18"></line></svg>',
+                    trophy: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-2m-4-3V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v1m4 3l-4-1 2 5m4-4l4-1-2 5"></path></svg>',
+                    alert: '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3.05h16.94a2 2 0 0 0 1.71-3.05L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>'
+                };
+                return icons[iconName] || '';
+            },
+
+            navItems: [
+                { icon: 'book', label: 'Beranda', tabKey: 'beranda' },
+                { icon: 'map', label: 'Modul', tabKey: 'modul' },
+                { icon: 'calculator', label: 'Simulasi', tabKey: 'simulasi' },
+                { icon: 'trophy', label: 'Prestasi', tabKey: 'prestasi' }
+            ],
+
+            createNavItem(item, isMobile = false) {
+                const activeClass = this.state.activeTab === item.tabKey 
+                    ? 'bg-orange-500 text-white shadow-lg' 
+                    : 'text-gray-700 hover:bg-gray-100';
+                
+                return `
+                    <button class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${activeClass}" data-tab="${item.tabKey}">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            ${this.getSvgIcon(item.icon)}
+                        </svg>
+                        <span class="font-medium">${item.label}</span>
+                    </button>
+                `;
+            },
+
+            renderNavigation() {
+                const desktopNav = document.getElementById('desktopNav');
+                const mobileNav = document.getElementById('mobileNav');
+                
+                desktopNav.innerHTML = this.navItems.map(item => this.createNavItem(item, false)).join('');
+                mobileNav.innerHTML = this.navItems.map(item => this.createNavItem(item, true)).join('');
+                
+                document.querySelectorAll('.nav-item').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        this.setActiveTab(btn.dataset.tab);
+                        this.state.menuOpen = false;
+                        this.renderNavigation();
+                        this.renderContent();
+                    });
+                });
+            },
+
+            renderContent() {
+                const content = document.getElementById('content');
+                
+                switch(this.state.activeTab) {
+                    case 'beranda':
+                        content.innerHTML = this.renderBeranda();
+                        break;
+                    case 'modul':
+                        content.innerHTML = this.renderModul();
+                        break;
+                    case 'simulasi':
+                        content.innerHTML = this.renderSimulasi();
+                        break;
+                    case 'prestasi':
+                        content.innerHTML = this.renderPrestasi();
+                        break;
+                }
+                this.attachEventListeners();
+            },
+
+            renderBeranda() {
+                return `
+                    <div class="space-y-8">
+                        <!-- Hero Section -->
+                        <div class="bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl p-8 text-white shadow-xl">
+                            <div class="flex items-center gap-3 mb-4">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    ${this.getSvgIcon('alert')}
+                                </svg>
+                                <h1 class="text-3xl font-bold">MathGuard</h1>
+                            </div>
+                            <p class="text-xl mb-2">Matematika untuk Siaga Bencana</p>
+                            <p class="text-orange-100 mb-6">
+                                Platform pembelajaran matematika kontekstual berbasis mitigasi bencana untuk siswa SMP
+                            </p>
+                            <button class="bg-white text-orange-600 px-6 py-3 rounded-lg font-semibold hover:bg-orange-50 transition-all shadow-lg flex items-center gap-2">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    ${this.getSvgIcon('play')}
+                                </svg>
+                                Mulai Belajar
+                            </button>
+                        </div>
+
+                        <!-- Stats -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-blue-50 p-6 rounded-xl border-2 border-blue-200">
+                                <div class="text-3xl font-bold text-blue-600 mb-2">3</div>
+                                <div class="text-gray-700">Modul Pembelajaran</div>
+                            </div>
+                            <div class="bg-green-50 p-6 rounded-xl border-2 border-green-200">
+                                <div class="text-3xl font-bold text-green-600 mb-2">15+</div>
+                                <div class="text-gray-700">Simulasi Interaktif</div>
+                            </div>
+                            <div class="bg-purple-50 p-6 rounded-xl border-2 border-purple-200">
+                                <div class="text-3xl font-bold text-purple-600 mb-2">50+</div>
+                                <div class="text-gray-700">Soal Latihan</div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Scenarios -->
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800 mb-4">Skenario Bencana Terkini</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                ${this.state.simulationScenarios.map(scenario => `
+                                    <div class="bg-white border-2 border-gray-200 rounded-xl p-5 hover:border-orange-400 transition-all cursor-pointer hover:shadow-lg">
+                                        <div class="text-sm text-orange-600 font-semibold mb-2">${scenario.type}</div>
+                                        <h3 class="font-bold text-gray-800 mb-2">${scenario.title}</h3>
+                                        <p class="text-gray-600 text-sm">${scenario.description}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            },
+
+            renderModul() {
+                return `
+                    <div class="space-y-6">
+                        <div>
+                            <h1 class="text-3xl font-bold text-gray-800 mb-2">Modul Pembelajaran</h1>
+                            <p class="text-gray-600">Pilih modul sesuai dengan topik matematika yang ingin dipelajari</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-6">
+                            ${this.state.modules.map(module => `
+                                <div class="module-card bg-white border-2 border-gray-200 rounded-xl p-6 hover:border-orange-400 transition-all cursor-pointer hover:shadow-xl" data-module-id="${module.id}">
+                                    <div class="flex items-start gap-4">
+                                        <div class="${module.color} p-4 rounded-xl text-white">
+                                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                ${this.getSvgIcon(module.icon)}
+                                            </svg>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <h3 class="text-xl font-bold text-gray-800">${module.title}</h3>
+                                                <svg class="text-gray-400" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    ${this.getSvgIcon('chevronRight')}
+                                                </svg>
+                                            </div>
+                                            <p class="text-gray-600 mb-4">${module.description}</p>
+                                            
+                                            <div class="flex flex-wrap gap-2 mb-4">
+                                                ${module.topics.map(topic => `
+                                                    <span class="bg-gray-100 px-3 py-1 rounded-full text-sm text-gray-700">
+                                                        ${topic}
+                                                    </span>
+                                                `).join('')}
+                                            </div>
+
+                                            <div class="flex items-center gap-4 text-sm text-gray-600">
+                                                <span class="bg-orange-100 text-orange-700 px-3 py-1 rounded-full font-medium">
+                                                    ${module.difficulty}
+                                                </span>
+                                                <span>⏱️ ${module.duration}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            },
+
+            renderSimulasi() {
+                return `
+                    <div class="space-y-6">
+                        <div>
+                            <h1 class="text-3xl font-bold text-gray-800 mb-2">Simulasi Interaktif</h1>
+                            <p class="text-gray-600">Latih kemampuanmu dengan skenario bencana nyata</p>
+                        </div>
+
+                        <div class="bg-yellow-50 border-2 border-yellow-300 rounded-xl p-6">
+                            <div class="flex items-start gap-3">
+                                <svg class="text-yellow-600 flex-shrink-0" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    ${this.getSvgIcon('alert')}
+                                </svg>
+                                <div>
+                                    <h3 class="font-bold text-yellow-800 mb-1">Fitur dalam Pengembangan</h3>
+                                    <p class="text-yellow-700 text-sm">
+                                        Simulasi interaktif sedang dalam tahap pengembangan. Akan tersedia simulasi:
+                                        perhitungan zona evakuasi, analisis data gempa real-time, dan kalkulator logistik bencana.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-white border-2 border-gray-200 rounded-xl p-6">
+                                <h3 class="font-bold text-gray-800 mb-3">🗺️ Peta Zona Bahaya</h3>
+                                <p class="text-gray-600 text-sm mb-4">
+                                    Visualisasi matematis radius dampak bencana menggunakan konsep lingkaran dan jarak
+                                </p>
+                                <button class="text-orange-600 font-semibold text-sm hover:text-orange-700">
+                                    Segera Hadir →
+                                </button>
+                            </div>
+
+                            <div class="bg-white border-2 border-gray-200 rounded-xl p-6">
+                                <h3 class="font-bold text-gray-800 mb-3">📊 Analisis Data Gempa</h3>
+                                <p class="text-gray-600 text-sm mb-4">
+                                    Interpretasi grafik dan statistik deskriptif dari data historis gempa bumi
+                                </p>
+                                <button class="text-orange-600 font-semibold text-sm hover:text-orange-700">
+                                    Segera Hadir →
+                                </button>
+                            </div>
+
+                            <div class="bg-white border-2 border-gray-200 rounded-xl p-6">
+                                <h3 class="font-bold text-gray-800 mb-3">🏕️ Kalkulator Shelter</h3>
+                                <p class="text-gray-600 text-sm mb-4">
+                                    Hitung kebutuhan tempat pengungsian dengan persamaan linear dan sistem persamaan
+                                </p>
+                                <button class="text-orange-600 font-semibold text-sm hover:text-orange-700">
+                                    Segera Hadir →
+                                </button>
+                            </div>
+
+                            <div class="bg-white border-2 border-gray-200 rounded-xl p-6">
+                                <h3 class="font-bold text-gray-800 mb-3">⚡ Rute Evakuasi Optimal</h3>
+                                <p class="text-gray-600 text-sm mb-4">
+                                    Tentukan jalur tercepat menggunakan konsep jarak, kecepatan, dan grafik
+                                </p>
+                                <button class="text-orange-600 font-semibold text-sm hover:text-orange-700">
+                                    Segera Hadir →
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            },
+
+            renderPrestasi() {
+                return `
+                    <div class="space-y-6">
+                        <div>
+                            <h1 class="text-3xl font-bold text-gray-800 mb-2">Prestasi & Progres</h1>
+                            <p class="text-gray-600">Pantau perkembangan belajarmu</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-gradient-to-br from-yellow-400 to-orange-500 p-6 rounded-xl text-white shadow-lg">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mb-3">
+                                    ${this.getSvgIcon('trophy')}
+                                </svg>
+                                <div class="text-2xl font-bold mb-1">0</div>
+                                <div class="text-sm">Badge Terkumpul</div>
+                            </div>
+                            <div class="bg-gradient-to-br from-blue-400 to-blue-600 p-6 rounded-xl text-white shadow-lg">
+                                <div class="text-2xl font-bold mb-1">0%</div>
+                                <div class="text-sm">Modul Diselesaikan</div>
+                            </div>
+                            <div class="bg-gradient-to-br from-green-400 to-green-600 p-6 rounded-xl text-white shadow-lg">
+                                <div class="text-2xl font-bold mb-1">0</div>
+                                <div class="text-sm">Poin Total</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border-2 border-gray-200 rounded-xl p-6">
+                            <h3 class="font-bold text-gray-800 mb-4">Progress Pembelajaran</h3>
+                            ${this.state.modules.map(module => `
+                                <div class="mb-4 last:mb-0">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-sm font-medium text-gray-700">${module.title}</span>
+                                        <span class="text-sm text-gray-500">0%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-orange-500 h-2 rounded-full" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div class="bg-orange-50 border-2 border-orange-200 rounded-xl p-6">
+                            <h3 class="font-bold text-orange-800 mb-3">🎯 Target Minggu Ini</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li class="flex items-center gap-2">
+                                    <div class="w-4 h-4 border-2 border-gray-400 rounded"></div>
+                                    <span class="text-sm">Selesaikan Modul Geometri untuk Evakuasi</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <div class="w-4 h-4 border-2 border-gray-400 rounded"></div>
+                                    <span class="text-sm">Kerjakan 5 simulasi interaktif</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <div class="w-4 h-4 border-2 border-gray-400 rounded"></div>
+                                    <span class="text-sm">Raih badge "Ahli Mitigasi Pemula"</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            },
+
+            showModuleModal(moduleId) {
+                const module = this.state.modules.find(m => m.id === moduleId);
+                if (!module) return;
+
+                const modalContent = document.getElementById('modalContent');
+                const modal = document.getElementById('moduleModal');
+
+                modalContent.innerHTML = `
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800">${module.title}</h2>
+                        <button class="modal-close text-gray-400 hover:text-gray-600">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                ${this.getSvgIcon('close')}
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <p class="text-gray-600 mb-6">${module.description}</p>
+
+                    <div class="space-y-4 mb-6">
+                        <h3 class="font-bold text-gray-800">Materi yang Dipelajari:</h3>
+                        <ul class="space-y-2">
+                            ${module.topics.map(topic => `
+                                <li class="flex items-center gap-2 text-gray-700">
+                                    <div class="w-2 h-2 bg-orange-500 rounded-full"></div>
+                                    ${topic}
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+
+                    <div class="bg-orange-50 border-2 border-orange-200 rounded-xl p-4 mb-6">
+                        <h4 class="font-bold text-orange-800 mb-2">Contoh Kasus Nyata:</h4>
+                        <p class="text-gray-700 text-sm">
+                            ${module.caseStudy}
+                        </p>
+                    </div>
+
+                    <button class="w-full bg-orange-500 text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition-all">
+                        Mulai Modul Ini
+                    </button>
+                `;
+
+                modal.classList.remove('modal-hidden');
+                modal.classList.add('modal-visible');
+
+                const closeBtn = modalContent.querySelector('.modal-close');
+                closeBtn.addEventListener('click', () => {
+                    modal.classList.add('modal-hidden');
+                    modal.classList.remove('modal-visible');
+                });
+            },
+
+            attachEventListeners() {
+                document.querySelectorAll('.module-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        const moduleId = parseInt(card.dataset.moduleId);
+                        this.showModuleModal(moduleId);
+                    });
+                });
+
+                document.getElementById('moduleModal').addEventListener('click', (e) => {
+                    if (e.target === document.getElementById('moduleModal')) {
+                        document.getElementById('moduleModal').classList.add('modal-hidden');
+                        document.getElementById('moduleModal').classList.remove('modal-visible');
+                    }
+                });
+            },
+
+            setActiveTab(tabKey) {
+                this.state.activeTab = tabKey;
+            },
+
+            toggleMenu() {
+                this.state.menuOpen = !this.state.menuOpen;
+                const mobileNav = document.getElementById('mobileNav');
+                if (this.state.menuOpen) {
+                    mobileNav.classList.remove('hidden');
+                } else {
+                    mobileNav.classList.add('hidden');
+                }
+            },
+
+            init() {
+                document.getElementById('menuBtn').addEventListener('click', () => this.toggleMenu());
+                this.renderNavigation();
+                this.renderContent();
+            }
+        };
+
+        // Initialize app when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => app.init());
+    </script>
+</body>
+</html>
+
+  const modules = [
+    {
+      id: 1,
+      title: "Geometri untuk Evakuasi",
+      icon: Map,
+      color: "bg-blue-500",
+      description: "Pelajari cara menghitung luas zona aman, jarak evakuasi, dan perimeter wilayah bencana",
+      topics: ["Luas & Keliling", "Jarak Titik", "Skala Peta"],
+      difficulty: "Pemula",
+      duration: "45 menit"
+    },
+    {
+      id: 2,
+      title: "Statistika Kebencanaan",
+      icon: Calculator,
+      color: "bg-green-500",
+      description: "Analisis data gempa, interpretasi grafik, dan probabilitas kejadian bencana",
+      topics: ["Rata-rata", "Diagram", "Peluang"],
+      difficulty: "Menengah",
+      duration: "50 menit"
+    },
+    {
+      id: 3,
+      title: "Aljabar Logistik Bencana",
+      icon: BookOpen,
+      color: "bg-purple-500",
+      description: "Hitung kebutuhan logistik, kapasitas shelter, dan distribusi bantuan",
+      topics: ["Persamaan Linear", "Sistem Persamaan", "Optimasi"],
+      difficulty: "Lanjutan",
+      duration: "60 menit"
+    }
+  ];
+
+  const simulationScenarios = [
+    {
+      title: "Simulasi Gempa Malang",
+      description: "Gempa 5.2 SR terjadi. Berapa luas radius aman?",
+      type: "Geometri"
+    },
+    {
+      title: "Evakuasi Gunung Semeru",
+      description: "3000 warga butuh dievakuasi. Berapa shelter diperlukan?",
+      type: "Aljabar"
+    },
+    {
+      title: "Analisis Banjir Tahunan",
+      description: "Data 10 tahun terakhir. Kapan banjir terparah?",
+      type: "Statistika"
+    }
+  ];
+
+  const NavItem = ({ icon: Icon, label, tabKey }) => (
+    <button
+      onClick={() => {
+        setActiveTab(tabKey);
+        setMenuOpen(false);
+      }}
+      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+        activeTab === tabKey
+          ? 'bg-orange-500 text-white shadow-lg'
+          : 'text-gray-700 hover:bg-gray-100'
+      }`}
+    >
+      <Icon size={20} />
+      <span className="font-medium">{label}</span>
+    </button>
+  );
+
+  const BerandaContent = () => (
+    <div className="space-y-8">
+      {/* Hero Section */}
+      <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl p-8 text-white shadow-xl">
+        <div className="flex items-center gap-3 mb-4">
+          <AlertTriangle size={40} />
+          <h1 className="text-3xl font-bold">MathGuard</h1>
+        </div>
+        <p className="text-xl mb-2">Matematika untuk Siaga Bencana</p>
+        <p className="text-orange-100 mb-6">
+          Platform pembelajaran matematika kontekstual berbasis mitigasi bencana untuk siswa SMP
+        </p>
+        <button className="bg-white text-orange-600 px-6 py-3 rounded-lg font-semibold hover:bg-orange-50 transition-all shadow-lg flex items-center gap-2">
+          <Play size={20} />
+          Mulai Belajar
+        </button>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-blue-50 p-6 rounded-xl border-2 border-blue-200">
+          <div className="text-3xl font-bold text-blue-600 mb-2">3</div>
+          <div className="text-gray-700">Modul Pembelajaran</div>
+        </div>
+        <div className="bg-green-50 p-6 rounded-xl border-2 border-green-200">
+          <div className="text-3xl font-bold text-green-600 mb-2">15+</div>
+          <div className="text-gray-700">Simulasi Interaktif</div>
+        </div>
+        <div className="bg-purple-50 p-6 rounded-xl border-2 border-purple-200">
+          <div className="text-3xl font-bold text-purple-600 mb-2">50+</div>
+          <div className="text-gray-700">Soal Latihan</div>
+        </div>
+      </div>
+
+      {/* Quick Scenarios */}
+      <div>
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">Skenario Bencana Terkini</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {simulationScenarios.map((scenario, idx) => (
+            <div key={idx} className="bg-white border-2 border-gray-200 rounded-xl p-5 hover:border-orange-400 transition-all cursor-pointer hover:shadow-lg">
+              <div className="text-sm text-orange-600 font-semibold mb-2">{scenario.type}</div>
+              <h3 className="font-bold text-gray-800 mb-2">{scenario.title}</h3>
+              <p className="text-gray-600 text-sm">{scenario.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  const ModulContent = () => (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">Modul Pembelajaran</h1>
+        <p className="text-gray-600">Pilih modul sesuai dengan topik matematika yang ingin dipelajari</p>
+      </div>
+
+      <div className="grid grid-cols-1 gap-6">
+        {modules.map((module) => {
+          const IconComponent = module.icon;
+          return (
+            <div
+              key={module.id}
+              className="bg-white border-2 border-gray-200 rounded-xl p-6 hover:border-orange-400 transition-all cursor-pointer hover:shadow-xl"
+              onClick={() => setSelectedModule(module)}
+            >
+              <div className="flex items-start gap-4">
+                <div className={`${module.color} p-4 rounded-xl text-white`}>
+                  <IconComponent size={32} />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-xl font-bold text-gray-800">{module.title}</h3>
+                    <ChevronRight className="text-gray-400" />
+                  </div>
+                  <p className="text-gray-600 mb-4">{module.description}</p>
+                  
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {module.topics.map((topic, idx) => (
+                      <span key={idx} className="bg-gray-100 px-3 py-1 rounded-full text-sm text-gray-700">
+                        {topic}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center gap-4 text-sm text-gray-600">
+                    <span className="bg-orange-100 text-orange-700 px-3 py-1 rounded-full font-medium">
+                      {module.difficulty}
+                    </span>
+                    <span>⏱️ {module.duration}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Module Detail Modal */}
+      {selectedModule && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" onClick={() => setSelectedModule(null)}>
+          <div className="bg-white rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-800">{selectedModule.title}</h2>
+              <button onClick={() => setSelectedModule(null)} className="text-gray-400 hover:text-gray-600">
+                <X size={24} />
+              </button>
+            </div>
+            
+            <p className="text-gray-600 mb-6">{selectedModule.description}</p>
+
+            <div className="space-y-4 mb-6">
+              <h3 className="font-bold text-gray-800">Materi yang Dipelajari:</h3>
+              <ul className="space-y-2">
+                {selectedModule.topics.map((topic, idx) => (
+                  <li key={idx} className="flex items-center gap-2 text-gray-700">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                    {topic}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="bg-orange-50 border-2 border-orange-200 rounded-xl p-4 mb-6">
+              <h4 className="font-bold text-orange-800 mb-2">Contoh Kasus Nyata:</h4>
+              <p className="text-gray-700 text-sm">
+                {selectedModule.id === 1 && "Menghitung radius zona aman evakuasi saat gempa 5.8 SR terjadi di Malang"}
+                {selectedModule.id === 2 && "Menganalisis data 50 gempa terakhir untuk memprediksi pola kejadian"}
+                {selectedModule.id === 3 && "Menentukan jumlah optimal tenda pengungsian untuk 2000 warga"}
+              </p>
+            </div>
+
+            <button className="w-full bg-orange-500 text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition-all">
+              Mulai Modul Ini
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  const SimulasiContent = () => (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">Simulasi Interaktif</h1>
+        <p className="text-gray-600">Latih kemampuanmu dengan skenario bencana nyata</p>
+      </div>
+
+      <div className="bg-yellow-50 border-2 border-yellow-300 rounded-xl p-6">
+        <div className="flex items-start gap-3">
+          <AlertTriangle className="text-yellow-600 flex-shrink-0" size={24} />
+          <div>
+            <h3 className="font-bold text-yellow-800 mb-1">Fitur dalam Pengembangan</h3>
+            <p className="text-yellow-700 text-sm">
+              Simulasi interaktif sedang dalam tahap pengembangan. Akan tersedia simulasi:
+              perhitungan zona evakuasi, analisis data gempa real-time, dan kalkulator logistik bencana.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-white border-2 border-gray-200 rounded-xl p-6">
+          <h3 className="font-bold text-gray-800 mb-3">🗺️ Peta Zona Bahaya</h3>
+          <p className="text-gray-600 text-sm mb-4">
+            Visualisasi matematis radius dampak bencana menggunakan konsep lingkaran dan jarak
+          </p>
+          <button className="text-orange-600 font-semibold text-sm hover:text-orange-700">
+            Segera Hadir →
+          </button>
+        </div>
+
+        <div className="bg-white border-2 border-gray-200 rounded-xl p-6">
+          <h3 className="font-bold text-gray-800 mb-3">📊 Analisis Data Gempa</h3>
+          <p className="text-gray-600 text-sm mb-4">
+            Interpretasi grafik dan statistik deskriptif dari data historis gempa bumi
+          </p>
+          <button className="text-orange-600 font-semibold text-sm hover:text-orange-700">
+            Segera Hadir →
+          </button>
+        </div>
+
+        <div className="bg-white border-2 border-gray-200 rounded-xl p-6">
+          <h3 className="font-bold text-gray-800 mb-3">🏕️ Kalkulator Shelter</h3>
+          <p className="text-gray-600 text-sm mb-4">
+            Hitung kebutuhan tempat pengungsian dengan persamaan linear dan sistem persamaan
+          </p>
+          <button className="text-orange-600 font-semibold text-sm hover:text-orange-700">
+            Segera Hadir →
+          </button>
+        </div>
+
+        <div className="bg-white border-2 border-gray-200 rounded-xl p-6">
+          <h3 className="font-bold text-gray-800 mb-3">⚡ Rute Evakuasi Optimal</h3>
+          <p className="text-gray-600 text-sm mb-4">
+            Tentukan jalur tercepat menggunakan konsep jarak, kecepatan, dan grafik
+          </p>
+          <button className="text-orange-600 font-semibold text-sm hover:text-orange-700">
+            Segera Hadir →
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const PrestasiContent = () => (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">Prestasi & Progres</h1>
+        <p className="text-gray-600">Pantau perkembangan belajarmu</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-gradient-to-br from-yellow-400 to-orange-500 p-6 rounded-xl text-white shadow-lg">
+          <Trophy size={40} className="mb-3" />
+          <div className="text-2xl font-bold mb-1">0</div>
+          <div className="text-sm">Badge Terkumpul</div>
+        </div>
+        <div className="bg-gradient-to-br from-blue-400 to-blue-600 p-6 rounded-xl text-white shadow-lg">
+          <div className="text-2xl font-bold mb-1">0%</div>
+          <div className="text-sm">Modul Diselesaikan</div>
+        </div>
+        <div className="bg-gradient-to-br from-green-400 to-green-600 p-6 rounded-xl text-white shadow-lg">
+          <div className="text-2xl font-bold mb-1">0</div>
+          <div className="text-sm">Poin Total</div>
+        </div>
+      </div>
+
+      <div className="bg-white border-2 border-gray-200 rounded-xl p-6">
+        <h3 className="font-bold text-gray-800 mb-4">Progress Pembelajaran</h3>
+        {modules.map((module) => (
+          <div key={module.id} className="mb-4 last:mb-0">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-gray-700">{module.title}</span>
+              <span className="text-sm text-gray-500">0%</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="bg-orange-500 h-2 rounded-full" style={{ width: '0%' }}></div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="bg-orange-50 border-2 border-orange-200 rounded-xl p-6">
+        <h3 className="font-bold text-orange-800 mb-3">🎯 Target Minggu Ini</h3>
+        <ul className="space-y-2 text-gray-700">
+          <li className="flex items-center gap-2">
+            <div className="w-4 h-4 border-2 border-gray-400 rounded"></div>
+            <span className="text-sm">Selesaikan Modul Geometri untuk Evakuasi</span>
+          </li>
+          <li className="flex items-center gap-2">
+            <div className="w-4 h-4 border-2 border-gray-400 rounded"></div>
+            <span className="text-sm">Kerjakan 5 simulasi interaktif</span>
+          </li>
+          <li className="flex items-center gap-2">
+            <div className="w-4 h-4 border-2 border-gray-400 rounded"></div>
+            <span className="text-sm">Raih badge "Ahli Mitigasi Pemula"</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white border-b-2 border-gray-200 sticky top-0 z-40 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="bg-orange-500 p-2 rounded-lg">
+                <AlertTriangle className="text-white" size={24} />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-gray-800">MathGuard</h1>
+                <p className="text-xs text-gray-500">Matematika Siaga Bencana</p>
+              </div>
+            </div>
+            
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="md:hidden p-2 hover:bg-gray-100 rounded-lg"
+            >
+              {menuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+
+            <nav className="hidden md:flex gap-2">
+              <NavItem icon={BookOpen} label="Beranda" tabKey="beranda" />
+              <NavItem icon={Map} label="Modul" tabKey="modul" />
+              <NavItem icon={Calculator} label="Simulasi" tabKey="simulasi" />
+              <NavItem icon={Trophy} label="Prestasi" tabKey="prestasi" />
+            </nav>
+          </div>
+
+          {/* Mobile Menu */}
+          {menuOpen && (
+            <nav className="md:hidden mt-4 space-y-2 pb-4">
+              <NavItem icon={BookOpen} label="Beranda" tabKey="beranda" />
+              <NavItem icon={Map} label="Modul" tabKey="modul" />
+              <NavItem icon={Calculator} label="Simulasi" tabKey="simulasi" />
+              <NavItem icon={Trophy} label="Prestasi" tabKey="prestasi" />
+            </nav>
+          )}
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 py-8">
+        {activeTab === 'beranda' && <BerandaContent />}
+        {activeTab === 'modul' && <ModulContent />}
+        {activeTab === 'simulasi' && <SimulasiContent />}
+        {activeTab === 'prestasi' && <PrestasiContent />}
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-gray-800 text-white mt-16">
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <h3 className="font-bold mb-3">MathGuard</h3>
+              <p className="text-gray-400 text-sm">
+                Platform pembelajaran matematika kontekstual berbasis mitigasi bencana untuk siswa SMP
+              </p>
+            </div>
+            <div>
+              <h3 className="font-bold mb-3">Fitur</h3>
+              <ul className="space-y-2 text-gray-400 text-sm">
+                <li>Modul Interaktif</li>
+                <li>Simulasi Bencana</li>
+                <li>Tracking Progress</li>
+                <li>Badge & Reward</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-bold mb-3">Kontak</h3>
+              <p className="text-gray-400 text-sm">
+                Program Pengabdian Masyarakat<br />
+                DPPM - Mitigasi Bencana<br />
+                Email: mathguard@edu.id
+              </p>
+            </div>
+          </div>
+          <div className="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400 text-sm">
+            © 2024 MathGuard. Dikembangkan untuk Pengabdian Masyarakat
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default MathGuard;
